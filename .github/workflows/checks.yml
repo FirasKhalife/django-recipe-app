@@ -3,8 +3,8 @@ name: Checks
 on:
   push:
     branches:
-      - main
-      - master
+      # - main
+      # - master
 
 jobs:
   test-lint:

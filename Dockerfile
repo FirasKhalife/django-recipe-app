@@ -11,12 +11,20 @@ EXPOSE 8000
 
 ARG DEV=false
 RUN pip install --upgrade pip && \
+    # install postgresql client
+    apk add --update --no-cache postgresql-client && \
+    # install dependencies needed to build psycopg2 in a virtual package
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        # dependencies needed to install psycopg2
+        build-base postgresql-dev musl-dev && \
     pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ]; \
         # if dev environment, install dev dependencies
         then pip install -r /tmp/requirements.dev.txt; \
     fi && \
     rm -rf /tmp && \
+    # remove virtual package
+    apk del .tmp-build-deps && \
     # Create a non-root user to run the application
     adduser \
       # no password needed
